@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NPC Follow Mouse</title>
+  <style>
+    .game {
+      width: 1600px;
+      height: 900px;
+      background-color: #f0f0f0;
+      border: 2px solid #333;
+      position: relative;
+      overflow: hidden;
+    }
+    .divA, .divB {
+      width: 50px;
+      height: 50px;
+      position: absolute;
+      border-radius: 50%;
+    }
+    .divA {
+      background-color: red;
+    }
+    .divB {
+      background-color: blue;
+    }
+  </style>
+</head>
+<body>
+  <h2>Gerakkan mouse di dalam kotak</h2>
+  <div class="game">
+    <div class="divA"></div>
+    <div class="divB"></div>
+  </div>
+
+  <script>
+    const game = document.querySelector('.game');
+    const divA = document.querySelector('.divA');
+    const divB = document.querySelector('.divB');
+
+    let targetX = 100, targetY = 100; // posisi target divA
+    let posBX = 300, posBY = 200;     // posisi awal divB
+
+    // Inisialisasi posisi
+    divA.style.left = `${targetX}px`;
+    divA.style.top = `${targetY}px`;
+    divB.style.left = `${posBX}px`;
+    divB.style.top = `${posBY}px`;
+
+    // Mouse menggerakkan divA
+    game.addEventListener("mousemove", (e) => {
+      const rect = game.getBoundingClientRect();
+      targetX = e.clientX - rect.left - divA.offsetWidth / 2;
+      targetY = e.clientY - rect.top - divA.offsetHeight / 2;
+      divA.style.left = `${targetX}px`;
+      divA.style.top = `${targetY}px`;
+    });
+
+    // Fungsi untuk menggerakkan divB ke arah divA
+    function followA() {
+      const speed = 3; // kecepatan gerak
+
+      const dx = targetX - posBX;
+      const dy = targetY - posBY;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance > 1) {
+        posBX += (dx / distance) * speed;
+        posBY += (dy / distance) * speed;
+
+        divB.style.left = `${posBX}px`;
+        divB.style.top = `${posBY}px`;
+      }
+
+      checkCollision();
+      requestAnimationFrame(followA); // loop animasi
+    }
+
+    // Fungsi cek tabrakan
+    function checkCollision() {
+      const rectA = divA.getBoundingClientRect();
+      const rectB = divB.getBoundingClientRect();
+
+      if (
+        rectA.top < rectB.bottom &&
+        rectA.bottom > rectB.top &&
+        rectA.left < rectB.right &&
+        rectA.right > rectB.left
+      ) {
+        divA.style.backgroundColor = "green";
+        divB.style.backgroundColor = "purple";
+      } else {
+        divA.style.backgroundColor = "red";
+        divB.style.backgroundColor = "blue";
+      }
+    }
+
+    // Mulai animasi
+    followA();
+  </script>
+</body>
+</html>

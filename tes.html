@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bola Ikuti Mouse</title>
+  <style>
+    #div-a {
+      width: 2000px;
+      height: 2000px;
+      background-color: #eee;
+      position: relative;
+      overflow: auto;
+    }
+
+    #div-b {
+      width: 1000px;
+      height: 1000px;
+      background-color: lightblue;
+      position: relative;
+      margin: 100px auto;
+    }
+
+    .ball {
+      width: 30px;
+      height: 30px;
+      background-color: red;
+      border-radius: 50%;
+      position: absolute;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+<div id="div-a">
+  <div id="div-b">
+    <div class="ball" id="ball"></div>
+  </div>
+</div>
+
+<script>
+  const divB = document.getElementById("div-b");
+  const ball = document.getElementById("ball");
+
+  const margin = 80; // 5rem ≈ 80px
+
+  divB.addEventListener("mousemove", (e) => {
+    const rect = divB.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    const ballHalfWidth = ball.offsetWidth / 2;
+    const ballHalfHeight = ball.offsetHeight / 2;
+
+    let x = mouseX - ballHalfWidth;
+    let y = mouseY - ballHalfHeight;
+
+    // Batasi posisi agar tidak melebihi area yang diberi margin 5rem
+    const minX = margin;
+    const maxX = divB.clientWidth - margin - ball.offsetWidth;
+    const minY = margin;
+    const maxY = divB.clientHeight - margin - ball.offsetHeight;
+
+    // Clamp nilai x dan y
+    x = Math.max(minX, Math.min(x, maxX));
+    y = Math.max(minY, Math.min(y, maxY));
+
+    ball.style.left = `${x}px`;
+    ball.style.top = `${y}px`;
+  });
+</script>
+
+</body>
+</html>
