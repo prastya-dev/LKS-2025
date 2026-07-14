@@ -9,3 +9,6 @@ echo Mendorong ke GitHub...
 git push
 
 pause
+
+
+
